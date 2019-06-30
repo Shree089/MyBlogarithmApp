@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+
+{% block body %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+              <small class="text-muted">{{ post.date_posted }}</small>
+                {% if post.author == user %}
+                    <div>
+                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' post.id %}">Update</a>
+                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' post.id %}">Delete</a>
+                    </div>
+
+                {% endif %}
+            </div>
+            <h2> {{ post.title }} </h2>
+            <p class="article-content">{{ post.content }}</p>
+              {{ total_likes }} Likes
+
+              {% if user.is_authenticated %}
+                    <form action="{% url 'like_post' %}" method="post">
+                        {% csrf_token %}
+                      {% if is_liked %}
+                        <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger">Dislike</button>
+                      {% else %}
+                        <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary">Like</button>
+                      {% endif %}
+                  </form>
+              {% endif %}
+
+          </div>
+        </article>
+
+{% endblock %}
